@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图书管理</title>
+	<link rel="stylesheet" href="css/booklist.css" type="text/css">
+	<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+	</script>
+	<script>
+		$(document).ready(function(){
+			$("button").click(function(){
+				$("tr").remove(".italic");
+			});
+		});
+	</script>
+</head>
+
+<body>
+<ul>
+    <li><a href="index.html">首页</a></li>
+    <li><a href="booklist.html">图书管理</a></li>
+    <li><a href="#">租借管理</a></li>
+    <li><a href="#">用户管理</a></li>
+    <li style="float: right;"><a href="login.html">退出</a></li>
+</ul>
+<table border="1">
+<!--   表头-->
+    <tr>
+        <th>名称</th>
+        <th>类型</th>
+        <th>单价</th>
+		<th>功能</th>
+    </tr>
+<!--    表内容-->
+    <tr class="italic">
+        <td>红楼梦</td>
+        <td>小说</td>
+        <td>100元</td>
+		<td><button>删除</button></td>
+    </tr>
+	
+</table>
+</body>
+</html>

@@ -1,0 +1,72 @@
+body {
+			background-image: url("https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fupload-images.jianshu.io%2Fupload_images%2F23269220-e40ae7826208808a.gif&refer=http%3A%2F%2Fupload-images.jianshu.io&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1656654672&t=3aa9b1d969024e73593f874baf6f4164");
+			background-repeat: no-repeat;    
+			background-attachment: fixed;   
+			background-size: cover;  
+			background-color: #CCCCCC;
+	}
+	
+table {
+			width: 500px;					
+			margin: 30px 40px 10px 40px;	
+			font-size: 25px;
+		}
+		
+input {
+			height: 30px;
+			width: 12em;
+			margin-top: 5px;
+			margin-bottom: 5px;
+		}
+		
+input[type="submit"],input[type="reset"]{
+			height: 25px;
+			width: 5em;
+			margin-top: 5px;
+			margin-left: 6px;
+			border-radius:4px;
+		}
+	
+.login,.register {
+	height: 25px;
+	width: 5em;
+	margin-top: 5px;
+	margin-left: 6px;
+	border-radius:4px;
+}
+		
+div {
+		margin:10px auto;
+		width:400px;
+		padding:40px;
+		font-size:12px;
+		font-family: "微软雅黑";
+		border-radius:10px;
+		opacity: 0.9;
+		font-weight:bold;
+		color:#FFF;
+	}
+
+	
+div.relative {
+	position: relative;
+	top: 150px;
+}
+	
+input {
+	border: 0;
+	border-radius: 6px;
+}
+
+p {
+	color: azure;
+	text-align: center;
+	font-family: '微软雅黑';
+	font-size: 30px;
+}
+
+a.change{
+	font-size: 14px;
+	color: #f1ffca;
+	text-decoration: none;
+}
