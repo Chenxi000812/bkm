@@ -12,7 +12,7 @@ import java.sql.SQLException;
  */
 public class MysqlUtil {
     public static final String DRIVER = "com.mysql.cj.jdbc.Driver";
-    public static final String URL = "jdbc:mysql://rm-uf639dsvmh3631we45o.mysql.rds.aliyuncs.com:3306/bookmanager";
+    public static final String URL = "jdbc:mysql://rm-uf639dsvmh3631we45o.mysql.rds.aliyuncs.com:3306/bookmanager?characterEncoding=utf-8";
     public static final String USERNAME = "qq984077246";
     public static final String PASSWORD = "Guochenxi2021";
     static {

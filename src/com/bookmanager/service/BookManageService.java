@@ -1,5 +1,10 @@
 package com.bookmanager.service;
 
+import com.bookmanager.dao.BookDao;
+import com.bookmanager.pojo.Book;
+
+import java.util.List;
+
 /**
  * @Classname BookManageService
  * @Description TODO
@@ -7,4 +12,8 @@ package com.bookmanager.service;
  * @Created by 晨曦
  */
 public class BookManageService {
+    public List<Book> getBooks() {
+        BookDao bookDao = new BookDao();
+        return bookDao.queryBook();
+    }
 }
