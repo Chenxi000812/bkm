@@ -2,6 +2,7 @@ package com.bookmanager.dao;
 
 import com.bookmanager.pojo.Book;
 import com.bookmanager.util.MysqlUtil;
+import com.mysql.cj.util.StringUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,11 +19,27 @@ import java.util.List;
  */
 public class BookDao {
 
-    public List<Book> queryBook() {
+    public List<Book> queryBook(int page, String word, String type) {
         Connection connection = MysqlUtil.getConnection();
         List<Book> bookList = new ArrayList<>();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM book");
+            StringBuilder sql = new StringBuilder("SELECT * FROM book");
+            if (!StringUtils.isNullOrEmpty(word)){
+                MysqlUtil.AND(sql," bookname like ? ");
+            }
+            if (!StringUtils.isNullOrEmpty(type)){
+                MysqlUtil.AND(sql," booktype=? ");
+            }
+            MysqlUtil.LIMIT(sql,page,15);
+            PreparedStatement preparedStatement = connection.prepareStatement(sql.toString());
+            int index = 1;
+            if (!StringUtils.isNullOrEmpty(word)){
+                preparedStatement.setString(index++,"%"+word+"%");
+            }
+            if (!StringUtils.isNullOrEmpty(type)){
+                preparedStatement.setString(index++,type);
+            }
+
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 Book book = new Book();
@@ -34,6 +51,8 @@ public class BookDao {
                 book.setDate(resultSet.getDate(6));
                 bookList.add(book);
             }
+            preparedStatement.close();
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

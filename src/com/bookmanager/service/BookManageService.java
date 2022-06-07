@@ -12,8 +12,8 @@ import java.util.List;
  * @Created by 晨曦
  */
 public class BookManageService {
-    public List<Book> getBooks() {
+    public List<Book> getBooks(int page, String word, String type) {
         BookDao bookDao = new BookDao();
-        return bookDao.queryBook();
+        return bookDao.queryBook(page,word,type);
     }
 }

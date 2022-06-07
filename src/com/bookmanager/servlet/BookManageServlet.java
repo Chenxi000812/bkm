@@ -17,26 +17,20 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-@WebServlet(name = "BookManageServlet", value = "/BookManageServlet")
+@WebServlet(name = "BookManageServlet", value = "/Manager/BookManage")
 public class BookManageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         AjaxResult ajaxResult = AjaxResult.build();
+        request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json");
+        response.setContentType("application/json;charset=UTF-8");
         PrintWriter writer = response.getWriter();
-/*        String offset = request.getParameter("offset");
-        if (StringUtils.isNullOrEmpty(offset)){
-            writer.print(
-                    ajaxResult
-                    .fail()
-                    .setMsg("必要参数不能为空！")
-                    .toJsonString()
-            );
-            return;
-        }*/
+        String page = request.getParameter("page");
+        String word = request.getParameter("word");//模糊查询
+        String type = request.getParameter("type");//根据类型筛选
         BookManageService bookManageService = new BookManageService();
-        List<Book> bookList = bookManageService.getBooks();
+        List<Book> bookList = bookManageService.getBooks(page==null?1:Integer.parseInt(page),word,type);
         writer.print(
                 ajaxResult
                         .success()

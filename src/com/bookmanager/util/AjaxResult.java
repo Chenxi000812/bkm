@@ -55,4 +55,5 @@ public class AjaxResult {
     public static AjaxResult build(){
         return new AjaxResult();
     }
+
 }

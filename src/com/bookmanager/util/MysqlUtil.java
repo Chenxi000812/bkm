@@ -30,4 +30,22 @@ public class MysqlUtil {
         }
         return null;
     }
+    private static void hasWhere(StringBuilder sb,String x){
+        if (sb.indexOf("where")==-1){
+            sb.append(" where ");
+        }else {
+            sb.append(x);
+        }
+    }
+    public static void AND(StringBuilder sb,String content){
+        hasWhere(sb," and ");
+        sb.append(content);
+    }
+
+    public static void LIMIT(StringBuilder sb,int page, int count) {
+        sb.append(" limit ");
+        sb.append(String.valueOf((page-1)*count));
+        sb.append(",");
+        sb.append(String.valueOf(count));
+    }
 }
