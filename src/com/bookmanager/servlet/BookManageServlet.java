@@ -6,6 +6,7 @@ package com.bookmanager.servlet; /**
  */
 
 import com.bookmanager.pojo.Book;
+import com.bookmanager.pojo.QueryObject;
 import com.bookmanager.service.BookManageService;
 import com.bookmanager.util.AjaxResult;
 import com.mysql.cj.util.StringUtils;
@@ -17,7 +18,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-@WebServlet(name = "BookManageServlet", value = "/Manager/BookManage")
+    @WebServlet(name = "BookManageServlet", value = "/Manager/BookManage")
 public class BookManageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -30,7 +31,11 @@ public class BookManageServlet extends HttpServlet {
         String word = request.getParameter("word");//模糊查询
         String type = request.getParameter("type");//根据类型筛选
         BookManageService bookManageService = new BookManageService();
-        List<Book> bookList = bookManageService.getBooks(page==null?1:Integer.parseInt(page),word,type);
+        QueryObject<Book> bookList = bookManageService.getBooks(
+                page==null?1:Long.parseLong(page),
+                word,
+                type
+        );
         writer.print(
                 ajaxResult
                         .success()

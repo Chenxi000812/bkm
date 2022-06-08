@@ -42,7 +42,7 @@ public class MysqlUtil {
         sb.append(content);
     }
 
-    public static void LIMIT(StringBuilder sb,int page, int count) {
+    public static void LIMIT(StringBuilder sb,Long page, int count) {
         sb.append(" limit ");
         sb.append(String.valueOf((page-1)*count));
         sb.append(",");

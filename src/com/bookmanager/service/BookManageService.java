@@ -2,6 +2,7 @@ package com.bookmanager.service;
 
 import com.bookmanager.dao.BookDao;
 import com.bookmanager.pojo.Book;
+import com.bookmanager.pojo.QueryObject;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  * @Created by 晨曦
  */
 public class BookManageService {
-    public List<Book> getBooks(int page, String word, String type) {
+    public QueryObject<Book> getBooks(Long page, String word, String type) {
         BookDao bookDao = new BookDao();
         return bookDao.queryBook(page,word,type);
     }
