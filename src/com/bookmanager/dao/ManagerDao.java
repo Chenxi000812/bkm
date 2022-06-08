@@ -2,9 +2,10 @@ package com.bookmanager.dao;
 
 import com.bookmanager.pojo.Manager;
 import com.bookmanager.util.MysqlUtil;
-import com.mysql.jdbc.PreparedStatement;
+
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
