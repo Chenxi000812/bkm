@@ -16,12 +16,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
-@WebServlet(name = "LoginServlet", value = "/LoginServlet")
+@WebServlet(name = "LoginServlet", value = "/Manager/LoginServlet")
 public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-            request.setCharacterEncoding("UTF-8");
-            response.setCharacterEncoding("UTF-8");
             response.setHeader("contentType", "text/html; charset=utf-8");
             PrintWriter writer = response.getWriter();
             String code = request.getParameter("code");

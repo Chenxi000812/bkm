@@ -9,6 +9,10 @@ import com.alibaba.fastjson.JSONObject;
  * @Created by 晨曦
  */
 public class AjaxResult {
+    public static final String ERROR = "40000";
+    public static final String CONTAIN_USERNAME = "40003";
+    public static final String PARAMETER_EMPTY = "40001";
+    public static final String PARAMETER_ERROR = "40002";
     private boolean success; //业务请求的是否成功 例如：登录成功 true   失败 false
     private String msg; //消息内容
     private String code; //错误代码 例如: 4000 密码错误  4001参数有误  5000后端bug
