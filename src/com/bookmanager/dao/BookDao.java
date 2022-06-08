@@ -1,7 +1,9 @@
 package com.bookmanager.dao;
 
 import com.bookmanager.pojo.Book;
+import com.bookmanager.pojo.QueryObject;
 import com.bookmanager.util.MysqlUtil;
+import com.mysql.cj.util.StringUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,12 +19,32 @@ import java.util.List;
  * @Created by 晨曦
  */
 public class BookDao {
-
-    public List<Book> queryBook() {
+    public QueryObject<Book> queryBook(Long page, String word, String type) {
         Connection connection = MysqlUtil.getConnection();
+        QueryObject<Book> queryObject = new QueryObject<>();
         List<Book> bookList = new ArrayList<>();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM book");
+            StringBuilder sql = new StringBuilder("SELECT * FROM book");
+            if (!StringUtils.isNullOrEmpty(word)){
+                MysqlUtil.AND(sql," bookname like ? ");
+            }
+            if (!StringUtils.isNullOrEmpty(type)){
+                MysqlUtil.AND(sql," booktype=? ");
+            }
+            MysqlUtil.LIMIT(sql,page,15);
+            PreparedStatement preparedStatement = connection.prepareStatement(sql.toString());
+            sql.replace(sql.indexOf("*"),sql.indexOf("*")+1,"count(*)");
+            PreparedStatement countStatement = connection.prepareStatement(sql.toString());
+            int index = 1;
+            if (!StringUtils.isNullOrEmpty(word)){
+                preparedStatement.setString(index++,"%"+word+"%");
+                countStatement.setString(index++,"%"+word+"%");
+            }
+            if (!StringUtils.isNullOrEmpty(type)){
+                preparedStatement.setString(index++,type);
+                countStatement.setString(index++,"%"+word+"%");
+            }
+
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 Book book = new Book();
@@ -34,9 +56,17 @@ public class BookDao {
                 book.setDate(resultSet.getDate(6));
                 bookList.add(book);
             }
+            queryObject.setObjects(bookList);
+            ResultSet totalResult = countStatement.executeQuery();
+            totalResult.next();
+            queryObject.setTotal(totalResult.getLong(1)); //设置总长度
+            queryObject.setPageIndex(page);
+            preparedStatement.close();
+            countStatement.close();
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return bookList;
+        return queryObject;
     }
 }
