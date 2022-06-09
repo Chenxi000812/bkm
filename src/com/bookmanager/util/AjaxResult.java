@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSONObject;
  */
 public class AjaxResult {
     public static final String ERROR = "40000";
+    public static final String CHECKCODE_ERROR = "40004";
     public static final String CONTAIN_USERNAME = "40003";
     public static final String PARAMETER_EMPTY = "40001";
     public static final String PARAMETER_ERROR = "40002";

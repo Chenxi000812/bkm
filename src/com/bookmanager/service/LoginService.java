@@ -3,6 +3,8 @@ package com.bookmanager.service;
 import com.bookmanager.dao.ManagerDao;
 import com.bookmanager.pojo.Manager;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * @Classname LoginService
  * @Description TODO
@@ -19,13 +21,14 @@ public class LoginService {
         return false;
     }
 
-    public boolean login(String username,String password) {
+    public boolean login(String username, String password, HttpSession session) {
         ManagerDao dao = new ManagerDao();
         Manager manager = dao.queryManagerByUsername(username);
         if (manager==null) {
             return false;
         }
         if (manager.getPwd().equals(password)) {
+            session.setAttribute("Manager",manager);
             return true;
         }
         return false;

@@ -17,4 +17,19 @@ public class BookManageService {
         BookDao bookDao = new BookDao();
         return bookDao.queryBook(page,word,type);
     }
+
+    public boolean removeBook(Long bookId) {
+        BookDao bookDao = new BookDao();
+        return bookDao.delBook(bookId)==1;
+    }
+
+    public boolean addBook(Book book) {
+        BookDao bookDao = new BookDao();
+        return bookDao.addBook(book)==1;
+    }
+
+    public boolean editBook(Book book) {
+        BookDao bookDao = new BookDao();
+        return bookDao.updateBook(book)==1;
+    }
 }

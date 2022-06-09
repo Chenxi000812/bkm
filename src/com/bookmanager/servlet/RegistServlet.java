@@ -21,6 +21,11 @@ public class RegistServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("utf-8");
         response.setCharacterEncoding("utf-8");
         response.setContentType("application/json; charset=utf-8");
@@ -28,7 +33,8 @@ public class RegistServlet extends HttpServlet {
         String username = request.getParameter("username");
         String pwd = request.getParameter("pwd");
         String pwd2 = request.getParameter("pwd2");
-        if (StringUtils.isNullOrEmpty(username)||StringUtils.isNullOrEmpty(pwd)||StringUtils.isNullOrEmpty(pwd2)){
+        String code = request.getParameter("code");
+        if (StringUtils.isNullOrEmpty(username)||StringUtils.isNullOrEmpty(pwd)||StringUtils.isNullOrEmpty(pwd2)||StringUtils.isNullOrEmpty(code)){
             writer.print(
                     AjaxResult.build()
                             .fail()
@@ -43,6 +49,16 @@ public class RegistServlet extends HttpServlet {
                             .fail()
                             .setCode(AjaxResult.ERROR)
                             .setMsg("密码与确认密码不匹配").toJsonString()
+            );
+            return;
+        }
+        String realcode = (String) request.getSession().getAttribute("CheckCode");
+        if (!code.equalsIgnoreCase(realcode)){
+            writer.print(
+                    AjaxResult.build()
+                            .fail()
+                            .setCode(AjaxResult.CHECKCODE_ERROR)
+                            .setMsg("验证码错误").toJsonString()
             );
             return;
         }
@@ -65,10 +81,5 @@ public class RegistServlet extends HttpServlet {
                         .success()
                         .setMsg("注册成功").toJsonString()
         );
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
     }
 }

@@ -6,6 +6,7 @@ import com.bookmanager.util.MysqlUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -53,7 +54,25 @@ public class ManagerDao {
     }
 
     public Manager queryManagerByUsername(String username) {
-        return null;
+        Connection connection = MysqlUtil.getConnection();
+        String sql="select * from manager where id = ?";
+        PreparedStatement ps = null;
+        Manager manager = null;
+        try {
+            ps=connection.prepareStatement(sql);
+            ps.setString(1,username);
+            ResultSet resultSet = ps.executeQuery();
+            resultSet.next();
+            manager = new Manager();
+            manager.setId(resultSet.getString(1));
+            manager.setName(resultSet.getString(2));
+            manager.setPwd(resultSet.getString(3));
+            ps.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return manager;
     }
 
 }

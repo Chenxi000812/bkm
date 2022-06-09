@@ -4,15 +4,152 @@
     <meta charset="UTF-8">
     <title>图书管理</title>
 	<link rel="stylesheet" href="css/booklist.css" type="text/css">
-	<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
-	</script>
-	<script>
-		$(document).ready(function(){
-			$("button").click(function(){
-				$("tr").remove(".italic");
-			});
-		});
-	</script>
+
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/jquery-ui.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
+
+	<script type="text/javascript">
+        SObjects = [];
+        Spage = 1;
+        word = "";
+        type = "";
+        totalPage = 0;
+        total = 0;
+	    $(function(){
+            generateRow(1);
+            $('#my_dialog').dialog({  //创建dialog，并设置为非自启动
+                autoOpen: false,
+            });
+	    });
+	    function generateRow(page){
+           $.ajax({
+               type:"GET",
+               url:"/Manager/BookManage?page="+page+"&word="+word+"&type="+type,
+               success:function (result) {
+                   if (result.success){
+                       total = result.data.total;
+                       Spage = result.data.pageIndex;
+                       totalPage = Math.ceil(total/15);
+                       $("tbody").empty();
+                       SObjects = result.data.objects
+                       index =0;
+                       for(let item of SObjects){
+                           $("tbody").append("<tr>\n" +
+                               "            <td>"+item.bookname+"</td>\n" +
+                               "            <td>"+item.booktype+"</td>\n" +
+                               "            <td>"+item.num+"</td>\n" +
+                               "            <td>"+item.price+"</td>\n" +
+                               "            <td>"+item.date+"</td>\n" +
+                               "            <td><input type=\"button\" onclick='delbook("+index+")' value=\"删除\" />&nbsp;&nbsp;<input type=\"button\" onclick='showED("+index+")' value=\"修改\" /></td>\n" +
+                               "        </tr>");
+                           index++;
+                       }
+                       loadPage();
+                   }
+               }
+           });
+        }
+
+        function delbook(index){
+            if (confirm("确定要删除？")){
+                $.ajax({
+                    type:"POST",
+                    url:"/Manager/BookManage?action=del",
+                    data:{"bookid":SObjects[index].bookid},
+                    success: function (result){
+                        alert(result.msg);
+                        if (result.success){
+                            generateRow(Spage);
+                        }
+                    }
+                });
+            }
+
+        }
+        function loadPage(){
+            $("#indexpage").val(Spage);
+            $("#totalPage").text(totalPage);
+            $("#total").text(total);
+        }
+        function jump(){
+            generateRow($("#indexpage").val());
+        }
+        function maxPage(){
+            generateRow(totalPage);
+        }
+        function minPage(){
+            generateRow(1);
+        }
+        function nextPage(){
+            generateRow(Spage+1);
+        }
+        function previousPage(){
+            generateRow(Spage-1);
+        }
+        function search(){
+            word = $("#byName").val();
+            type = $("#byType").val();
+            generateRow(1);
+        }
+        bkid = null;
+        function showED(index){
+            $('#my_dialog').dialog({title:"编辑图书"}).dialog('open');
+            bkid = SObjects[index].bookid;
+            $("input[name='bookname']").val(SObjects[index].bookname);
+            $("input[name='booktype']").val(SObjects[index].booktype);
+            $("input[name='num']").val(SObjects[index].num);
+            $("input[name='price']").val(SObjects[index].price);
+        }
+        function showAD(){
+            $('#my_dialog').dialog({title:"添加图书"}).dialog('open');
+            bkid = null;
+            $("input[name='bookname']").val("");
+            $("input[name='booktype']").val("");
+            $("input[name='num']").val("");
+            $("input[name='price']").val("");
+        }
+        function closeD(){
+            $('#my_dialog').dialog('close');
+        }
+        function uploadBook(){
+            bookobj={"bookid": bkid,
+                "bookname": $("input[name='bookname']").val(),
+                "booktype": $("input[name='booktype']").val(),
+                "num": $("input[name='num']").val(),
+                "price": $("input[name='price']").val(),
+            };
+            if (bkid!=null){
+                $.ajax({
+                    type: "POST",
+                    url:"/Manager/BookManage?action=update&bookid="+bkid,
+                    data: bookobj,
+                    success: function (result){
+                        alert(result.msg);
+                        if (result.success){
+                            generateRow(Spage);
+                            closeD();
+                        }
+                    }
+                })
+            }else {
+                $.ajax({
+                    type: "POST",
+                    url:"/Manager/BookManage?action=add",
+                    data: bookobj,
+                    success: function (result){
+                        alert(result.msg);
+                        if (result.success){
+                            generateRow(Spage);
+                            closeD();
+                        }
+                    }
+                })
+            }
+
+        }
+	    </script>
+
 </head>
 
 <body>
@@ -23,22 +160,48 @@
     <li><a href="#">用户管理</a></li>
     <li style="float: right;"><a href="login.html">退出</a></li>
 </ul>
-<table border="1">
-<!--   表头-->
-    <tr>
-        <th>名称</th>
-        <th>类型</th>
-        <th>单价</th>
-		<th>功能</th>
-    </tr>
-<!--    表内容-->
-    <tr class="italic">
-        <td>红楼梦</td>
-        <td>小说</td>
-        <td>100元</td>
-		<td><button>删除</button></td>
-    </tr>
-	
-</table>
+<div style="margin-top: 55px">
+    <input type="button" onclick="showAD()" value="添加">
+    名称：<input type="text" id="byName"/>
+    类型：<input type="text" id="byType"/>
+    <input type="button" onclick="search()" value="查询">
+    <table border="1">
+        <!--   表头-->
+        <thead>
+        <tr>
+            <th>名称</th>
+            <th>类型</th>
+            <th>数量</th>
+            <th>单价</th>
+            <th>日期</th>
+            <th>功能</th>
+        </tr>
+        </thead>
+
+        <!--    表内容-->
+        <tbody>
+
+        </tbody>
+
+
+    </table>
+    <div style="text-align: center">
+        <a href="javascript:minPage()">《</a>&nbsp;<a href="javascript:previousPage()">&lt;</a> 第 <input id="indexpage" style="width: 40px" type="number" /> 页 \ 共 <strong id="totalPage"></strong> 页 <a href="javascript:nextPage()">&gt;</a>&nbsp;<a href="javascript:maxPage()">》</a>&nbsp;&nbsp;<a href="javascript:jump()">跳转</a>&nbsp;&nbsp;总数：<strong id="total"></strong>条
+    </div>
+
+</div>
+<div id="my_dialog" title="我的对话框">
+    <form id="#editForm">
+        <p>名称：<input name="bookname" type="text" /></p>
+        <p>类型：<input name="booktype" type="text" /></p>
+        <p>数量：<input name="num" type="number"/></p>
+        <p>单价：<input name="price" type="number"/></p>
+        <div style="text-align: right">
+            <input type="button" onclick="uploadBook()" value="提交"/>
+            <input type="button" onclick="closeD()" value="取消"/>
+        </div>
+
+    </form>
+</div>
 </body>
 </html>

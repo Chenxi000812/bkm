@@ -6,36 +6,42 @@
 		<link rel="stylesheet" href="css/register.css" type="text/css">
 	</head>
 	<body>
-		<script src="http://libs.baidu.com/jQuery/1.10.2/jquery.min.js"></script>
+		<script type="text/javascript" src="js/jquery.js"></script>
 		<script type="text/javascript">
-			function checkForm() {
-				var name = $("#Txt_Name").val();
-				var password = $("#pwd1").val();
-				if(name == " "){
-					$(".name_lable").empty();
-					$("#username").after("<label class='name_lable'><font>用户名不能为空</font></lable>")
-				}else{
-					$(".name_lable").empty();
-				}
-				if(password == " "){
-					$(".password_lable").empty();
-					$("#pwd1").after("<label class='password_lable'><font>密码不能为空</font></lable>")
-				}else{
-					$(".password_lable").empty();
-				}
+			function refreshCode(){
+				$("#verify_img").attr("src","/CheckCode?r"+Math.random())
+			}
+			$(function(){
+				$("#verify_img").click(function (){refreshCode()});
+			});
+			function submitS() {
+				let data = $("form").serialize();
+				$.ajax({
+					type:"POST",
+					url:"/Manager/RegistServlet" ,
+					data: data,
+					success: function(result){
+						alert(result.success)
+						alert(result.msg);
+						if(!result.success){
+							window.location.href="login.html"
+						}
+					}
+				})
 			}
 		</script>
+			
 		<div class="relative">
 			<p>管理员注册</p>
-			<form name="register_form" action="#" method="GET" onsubmit="return checkForm()">
+			<form name="register_form" action="#" method="POST">
 			<table align="center">
 				<tr>
 					<td>用 户 名:</td>
-					<td ><input type="text" name="username" placeholder=" 请输入用户名" id="Txt_Name"></td>
+					<td ><input type="text" name="username" placeholder=" 请输入用户名" id="username"></td>
 				</tr>
 				<tr>
 					<td>密    码:</td>
-					<td "><input type="password" name="pwd1" id="Pwd1" placeholder=" 请输入密码"></td>
+					<td "><input type="password" name="pwd" id="pwd" placeholder=" 请输入密码"></td>
 				</tr>
 				<tr>
 					<td>确认密码:</td>
@@ -43,11 +49,15 @@
 				</tr>
 				<tr>
 					<td>验证码</td>
-					<td><input type="text" name="varify" id="varify" placeholder=" 请输入验证码"></td>
+					<td><input type="text" name="code" id="code" placeholder=" 请输入验证码"></td>
 				</tr>
 				<tr>
 					<td></td>
-					<td><input type="submit" id="submit_form" value="注册" onclick="return check();"/>
+					<td><img src="/CheckCode" alt="" id="verify_img"></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type="button" id="submit_form" value="注册" onclick="submitS()"/>
 					<input type="reset" value="重置"/></td>
 				</tr>
 			</table>

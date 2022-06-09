@@ -27,6 +27,7 @@ public class CheckCodeServlet extends HttpServlet {
         BufferedImage image = vccUtil.generateCode(width, height);
         String code = vccUtil.getCode();
         request.getSession().setAttribute("CheckCode",code);
+        System.out.println(code);
         //将图片输入到页面
         ImageIO.write(image, "jpg", response.getOutputStream());
     }

@@ -5,10 +5,7 @@ import com.bookmanager.pojo.QueryObject;
 import com.bookmanager.util.MysqlUtil;
 import com.mysql.cj.util.StringUtils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,17 +28,18 @@ public class BookDao {
             if (!StringUtils.isNullOrEmpty(type)){
                 MysqlUtil.AND(sql," booktype=? ");
             }
+            PreparedStatement countStatement = connection.prepareStatement(sql.toString().replace("*","count(*)"));
             MysqlUtil.LIMIT(sql,page,15);
             PreparedStatement preparedStatement = connection.prepareStatement(sql.toString());
-            sql.replace(sql.indexOf("*"),sql.indexOf("*")+1,"count(*)");
-            PreparedStatement countStatement = connection.prepareStatement(sql.toString());
+
+
             int index = 1;
             if (!StringUtils.isNullOrEmpty(word)){
-                preparedStatement.setString(index++,"%"+word+"%");
+                preparedStatement.setString(index,"%"+word+"%");
                 countStatement.setString(index++,"%"+word+"%");
             }
             if (!StringUtils.isNullOrEmpty(type)){
-                preparedStatement.setString(index++,type);
+                preparedStatement.setString(index,type);
                 countStatement.setString(index++,"%"+word+"%");
             }
 
@@ -68,5 +66,50 @@ public class BookDao {
             e.printStackTrace();
         }
         return queryObject;
+    }
+    public int delBook(Long bookId){
+        Connection connection = MysqlUtil.getConnection();
+        int i = 0;
+        try {
+            PreparedStatement statement = connection.prepareStatement("DELETE FROM book where bookid = ?");
+            statement.setLong(1,bookId);
+            i = statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
+
+    public int addBook(Book book) {
+        Connection connection = MysqlUtil.getConnection();
+        int i = 0;
+        try {
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO book values (null,?,?,?,?,?)");
+            statement.setString(1,book.getBookname());
+            statement.setString(2,book.getBooktype());
+            statement.setInt(3,book.getPrice());
+            statement.setInt(4,book.getNum());
+            statement.setDate(5,new Date(System.currentTimeMillis()));
+            i = statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
+    public int updateBook(Book book) {
+        Connection connection = MysqlUtil.getConnection();
+        int i = 0;
+        try {
+            PreparedStatement statement = connection.prepareStatement("update book set bookname=?,booktype=?,price=?,num=? where bookid=?");
+            statement.setString(1,book.getBookname());
+            statement.setString(2,book.getBooktype());
+            statement.setInt(3,book.getPrice());
+            statement.setInt(4,book.getNum());
+            statement.setLong(5,book.getBookid());
+            i = statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return i;
     }
 }
